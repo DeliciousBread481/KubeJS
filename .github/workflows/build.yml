@@ -1,0 +1,53 @@
+name: Build KubeJS (1.20.1)  
+  
+on:  
+  push:  
+    branches:  
+      - '2001'  
+  pull_request:  
+    branches:  
+      - '2001'  
+  workflow_dispatch:  
+  
+jobs:  
+  build:  
+    runs-on: ubuntu-latest  
+    if: |  
+      !contains(github.event.head_commit.message, '[ci skip]')  
+    steps:  
+      - name: Checkout  
+        uses: actions/checkout@v4  
+        with:  
+          fetch-depth: 30  
+  
+      - name: Set up JDK 17  
+        uses: actions/setup-java@v4  
+        with:  
+          distribution: 'temurin'  
+          java-version: '17'  
+  
+      - name: Grant execute permission for gradlew  
+        run: chmod +x gradlew  
+  
+      - name: Validate Gradle Wrapper  
+        uses: gradle/actions/wrapper-validation@v4  
+  
+      - name: Setup Gradle  
+        uses: gradle/actions/setup-gradle@v4  
+  
+      - name: Build with Gradle  
+        run: ./gradlew build --stacktrace --no-daemon  
+  
+      - name: Upload Fabric Artifact  
+        uses: actions/upload-artifact@v4  
+        with:  
+          name: KubeJS-fabric  
+          path: build/libs/*fabric*.jar  
+          if-no-files-found: error  
+  
+      - name: Upload Forge Artifact  
+        uses: actions/upload-artifact@v4  
+        with:  
+          name: KubeJS-forge  
+          path: build/libs/*forge*.jar  
+          if-no-files-found: error
