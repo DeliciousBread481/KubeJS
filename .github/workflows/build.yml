@@ -3,10 +3,10 @@ name: Build KubeJS (1.20.1)
 on:  
   push:  
     branches:  
-      - '2001'  
+      - '2001-test'  
   pull_request:  
     branches:  
-      - '2001'  
+      - '2001-test'  
   workflow_dispatch:  
   
 jobs:  
